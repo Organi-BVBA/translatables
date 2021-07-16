@@ -1,6 +1,6 @@
 <?php
 
-namespace Roobieboobieee\Translatables\Tests;
+namespace RoobieBoobieee\Translatables\Tests;
 
 class ExampleTest extends TestCase
 {

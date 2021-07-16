@@ -1,6 +1,6 @@
 <?php
 
-namespace Roobieboobieee\Translatables\Commands;
+namespace RoobieBoobieee\Translatables\Commands;
 
 use Illuminate\Console\Command;
 
