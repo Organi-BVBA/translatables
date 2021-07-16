@@ -1,6 +1,6 @@
 <?php
 
-namespace Roobieboobieee\Translatables;
+namespace RoobieBoobieee\Translatables;
 
 class Translatables
 {

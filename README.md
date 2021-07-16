@@ -17,13 +17,13 @@ composer require roobieboobieee/translatables
 You can publish and run the migrations with:
 
 ```bash
-php artisan vendor:publish --provider="Roobieboobieee\Translatables\TranslatablesServiceProvider" --tag="translatables-migrations"
+php artisan vendor:publish --provider="RoobieBoobieee\Translatables\TranslatablesServiceProvider" --tag="translatables-migrations"
 php artisan migrate
 ```
 
 You can publish the config file with:
 ```bash
-php artisan vendor:publish --provider="Roobieboobieee\Translatables\TranslatablesServiceProvider" --tag="translatables-config"
+php artisan vendor:publish --provider="RoobieBoobieee\Translatables\TranslatablesServiceProvider" --tag="translatables-config"
 ```
 
 This is the contents of the published config file:
@@ -36,7 +36,7 @@ return [
 ## Usage
 
 ```php
-$translatables = new Roobieboobieee\Translatables();
+$translatables = new RoobieBoobieee\Translatables();
 echo $translatables->echoPhrase('Hello, Spatie!');
 ```
 
