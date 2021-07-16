@@ -20,7 +20,8 @@
         "php": ">=7.0",
         "illuminate/contracts": "^8.37",
         "illuminate/database": "^8.50",
-        "illuminate/support": "^8.50"
+        "illuminate/support": "^8.50",
+        "spatie/laravel-package-tools": "^1.9"
     },
     "require-dev": {
         "brianium/paratest": "^6.2",
