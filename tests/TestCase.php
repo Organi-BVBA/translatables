@@ -1,10 +1,10 @@
 <?php
 
-namespace Roobieboobieee\Translatables\Tests;
+namespace RoobieBoobieee\Translatables\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Roobieboobieee\Translatables\TranslatablesServiceProvider;
+use RoobieBoobieee\Translatables\TranslatablesServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -13,7 +13,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Roobieboobieee\\Translatables\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'RoobieBoobieee\\Translatables\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 

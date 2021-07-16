@@ -1,8 +1,8 @@
 <?php
 
-namespace Roobieboobieee\Translatables;
+namespace RoobieBoobieee\Translatables;
 
-use Roobieboobieee\Translatables\Commands\TranslatablesCommand;
+use RoobieBoobieee\Translatables\Commands\TranslatablesCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
