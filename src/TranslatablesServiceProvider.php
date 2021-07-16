@@ -2,9 +2,9 @@
 
 namespace Roobieboobieee\Translatables;
 
+use Roobieboobieee\Translatables\Commands\TranslatablesCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Roobieboobieee\Translatables\Commands\TranslatablesCommand;
 
 class TranslatablesServiceProvider extends PackageServiceProvider
 {
