@@ -2,10 +2,10 @@
 
 namespace RoobieBoobieee\Translatables\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model
 
 abstract class Translatable extends Model
 {
@@ -141,7 +141,7 @@ abstract class Translatable extends Model
     public function setAllTranslations($translations)
     {
         $this->translations = $translations;
-        $this->dirty        = true;
+        $this->dirty = true;
 
         return $this;
     }
@@ -255,7 +255,7 @@ abstract class Translatable extends Model
 
         if (! $joined) {
             // Get the table + field names for the join
-            $t  = $this->getTable() . '.' . $this->getKeyName();
+            $t = $this->getTable() . '.' . $this->getKeyName();
             $tt = $this->getTranslationsTable() . '.' . $this->getKeyName();
 
             // Join the translations table
