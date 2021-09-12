@@ -25,10 +25,12 @@ class Translatable implements Rule
     public function passes($attribute, $value)
     {
         $locales = config('translatables.accepted_locales');
+        $usedLocales = array_keys($value);
+
 
         return is_array($value)
             && count($value) === count($locales)
-            && count(array_diff($value, $locales)) === 0;
+            && count(array_diff($usedLocales, $locales)) === 0;
     }
 
     /**
