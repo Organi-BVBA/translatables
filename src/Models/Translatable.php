@@ -59,7 +59,7 @@ abstract class Translatable extends Model
     {
         // Check if requested attribute is a translatable attribute
         if ($this->isTranslatableAttribute($attribute)) {
-            if ($value instanceof Translatable) {
+            if ($value instanceof Translation) {
                 foreach ($value->translations() as $locale => $v) {
                     $this->setTranslation($locale, $attribute, $v);
                 }
@@ -214,12 +214,12 @@ abstract class Translatable extends Model
             return $output;
         });
 
-        return new Translatable($value);
+        return new Translation($value);
     }
 
     public function getTranslationsTable()
     {
-        return $this->table . '_translations';
+        return $this->getTable() . '_translations';
     }
 
     public function getLocalizable()

@@ -20,7 +20,7 @@ class Translation implements \JsonSerializable
         return $this->get();
     }
 
-    public static function make($translations = [])
+    public static function make(array $translations = [])
     {
         if (! is_array($translations)) {
             $translations = [\App::getLocale() => $translations];
