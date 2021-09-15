@@ -30,11 +30,11 @@ trait HasTranslations
      *
      * @return mixed
      */
-    public function getAttributeValue($attribute)
+    public function getAttribute($attribute)
     {
         // Check if requested attribute is a translatable attribute
         if (! $this->isTranslatableAttribute($attribute)) {
-            return parent::getAttributeValue($attribute);
+            return parent::getAttribute($attribute);
         }
 
         return $this->getTranslatedLocales($attribute);
