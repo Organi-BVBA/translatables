@@ -1,5 +1,6 @@
 <?php
-// config for RoobieBoobieee/Translatables
+
+// config for Organi/Translatables
 return [
     'accepted_locales' => [
         'nl', 'en', 'fr', 'de',

@@ -1,11 +1,15 @@
 <?php
 
-namespace RoobieBoobieee\Translatables\Tests;
+namespace Organi\Translatables\Tests;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class ExampleTest extends TestCase
 {
     /** @test */
-    public function true_is_true()
+    public function trueIsTrue()
     {
         $this->assertTrue(true);
     }

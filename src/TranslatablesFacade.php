@@ -1,11 +1,11 @@
 <?php
 
-namespace RoobieBoobieee\Translatables;
+namespace Organi\Translatables;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \RoobieBoobieee\Translatables\Translatables
+ * @see \Organi\Translatables\Translatables
  */
 class TranslatablesFacade extends Facade
 {

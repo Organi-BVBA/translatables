@@ -1,11 +1,15 @@
 <?php
 
-namespace RoobieBoobieee\Translatables\Tests;
+namespace Organi\Translatables\Tests;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use RoobieBoobieee\Translatables\TranslatablesServiceProvider;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Organi\Translatables\TranslatablesServiceProvider;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class TestCase extends Orchestra
 {
     public function setUp(): void
@@ -13,15 +17,8 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'RoobieBoobieee\\Translatables\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'Organi\\Translatables\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
         );
-    }
-
-    protected function getPackageProviders($app)
-    {
-        return [
-            TranslatablesServiceProvider::class,
-        ];
     }
 
     public function getEnvironmentSetUp($app)
@@ -32,5 +29,12 @@ class TestCase extends Orchestra
         include_once __DIR__.'/../database/migrations/create_translatables_table.php.stub';
         (new \CreatePackageTable())->up();
         */
+    }
+
+    protected function getPackageProviders($app)
+    {
+        return [
+            TranslatablesServiceProvider::class,
+        ];
     }
 }

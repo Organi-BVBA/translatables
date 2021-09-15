@@ -1,12 +1,12 @@
 {
-    "name": "roobieboobieee/translatables",
+    "name": "organi/translatables",
     "description": "",
     "keywords": [
-        "RoobieBoobieee",
+        "Organi",
         "laravel",
         "translatables"
     ],
-    "homepage": "https://gitlab.com/RoobieBoobieee/translatables",
+    "homepage": "https://gitlab.com/Organi/translatables",
     "license": "MIT",
     "authors": [
         {
@@ -33,13 +33,13 @@
     },
     "autoload": {
         "psr-4": {
-            "RoobieBoobieee\\Translatables\\": "src",
-            "RoobieBoobieee\\Translatables\\Database\\Factories\\": "database/factories"
+            "Organi\\Translatables\\": "src",
+            "Organi\\Translatables\\Database\\Factories\\": "database/factories"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "RoobieBoobieee\\Translatables\\Tests\\": "tests"
+            "Organi\\Translatables\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -53,10 +53,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "RoobieBoobieee\\Translatables\\TranslatablesServiceProvider"
+                "Organi\\Translatables\\TranslatablesServiceProvider"
             ],
             "aliases": {
-                "Translatables": "RoobieBoobieee\\Translatables\\TranslatablesFacade"
+                "Translatables": "Organi\\Translatables\\TranslatablesFacade"
             }
         }
     },

@@ -1,29 +1,21 @@
-# This is my package Translatables
-
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/roobieboobieee/translatables.svg?style=flat-square)](https://packagist.org/packages/roobieboobieee/translatables)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/roobieboobieee/translatables/run-tests?label=tests)](https://github.com/roobieboobieee/translatables/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/roobieboobieee/translatables/Check%20&%20fix%20styling?label=code%20style)](https://github.com/roobieboobieee/translatables/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/roobieboobieee/translatables.svg?style=flat-square)](https://packagist.org/packages/roobieboobieee/translatables)
-
-
 ## Installation
 
 You can install the package via composer:
 
 ```bash
-composer require roobieboobieee/translatables
+composer require organi/translatables
 ```
 
 You can publish and run the migrations with:
 
 ```bash
-php artisan vendor:publish --provider="RoobieBoobieee\Translatables\TranslatablesServiceProvider" --tag="translatables-migrations"
+php artisan vendor:publish --provider="Organi\Translatables\TranslatablesServiceProvider" --tag="translatables-migrations"
 php artisan migrate
 ```
 
 You can publish the config file with:
 ```bash
-php artisan vendor:publish --provider="RoobieBoobieee\Translatables\TranslatablesServiceProvider" --tag="translatables-config"
+php artisan vendor:publish --provider="Organi\Translatables\TranslatablesServiceProvider" --tag="translatables-config"
 ```
 
 This is the contents of the published config file:
@@ -36,7 +28,7 @@ return [
 ## Usage
 
 ```php
-$translatables = new RoobieBoobieee\Translatables();
+$translatables = new Organi\Translatables();
 echo $translatables->echoPhrase('Hello, Spatie!');
 ```
 

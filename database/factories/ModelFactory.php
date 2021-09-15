@@ -1,6 +1,6 @@
 <?php
 
-namespace RoobieBoobieee\Translatables\Database\Factories;
+namespace Organi\Translatables\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 

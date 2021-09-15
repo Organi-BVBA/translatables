@@ -1,11 +1,11 @@
 <?php
 
-namespace RoobieBoobieee\Translatables\Traits;
+namespace Organi\Translatables\Traits;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use RoobieBoobieee\Translatables\Models\Translation;
+use Illuminate\Database\Eloquent\Builder;
+use Organi\Translatables\Models\Translation;
 
 trait HasTranslations
 {
@@ -62,8 +62,6 @@ trait HasTranslations
         } else {
             $this->setTranslation(\App::getLocale(), $attribute, $value);
         }
-
-        return;
     }
 
     public static function bootHasTranslations()
@@ -132,7 +130,7 @@ trait HasTranslations
     public function setAllTranslations($translations)
     {
         $this->translations = $translations;
-        $this->dirty = true;
+        $this->dirty        = true;
 
         return $this;
     }
@@ -246,7 +244,7 @@ trait HasTranslations
 
         if (! $joined) {
             // Get the table + field names for the join
-            $t = $this->getTable() . '.' . $this->getKeyName();
+            $t  = $this->getTable() . '.' . $this->getKeyName();
             $tt = $this->getTranslationsTable() . '.' . $this->getKeyName();
 
             // Join the translations table
@@ -290,16 +288,16 @@ trait HasTranslations
         return $attributes;
     }
 
+    protected function locales()
+    {
+        return config('translatables.accepted_locales');
+    }
+
     /**
      * Returns an array with all translatable attributes as empty string.
      */
     private function getEmptyTranslationsArray()
     {
         return array_fill_keys($this->localizable, '');
-    }
-
-    protected function locales()
-    {
-        return config('translatables.accepted_locales');
     }
 }

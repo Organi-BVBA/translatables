@@ -1,6 +1,6 @@
 <?php
 
-namespace RoobieBoobieee\Translatables\Models;
+namespace Organi\Translatables\Models;
 
 use Illuminate\Support\Arr;
 
