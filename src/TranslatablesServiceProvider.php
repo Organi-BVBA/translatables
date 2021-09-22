@@ -18,10 +18,7 @@ class TranslatablesServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('translatables')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_translatables_table')
-            ->hasCommand(TranslatablesCommand::class);
+            ->hasConfigFile();
 
 
         Blueprint::macro('translations', function ($table) {
