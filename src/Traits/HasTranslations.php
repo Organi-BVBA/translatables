@@ -1,21 +1,14 @@
 <?php
 
-namespace RoobieBoobieee\Translatables\Models;
+namespace RoobieBoobieee\Translatables\Traits;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model
+use RoobieBoobieee\Translatables\Models\Translation;
 
-abstract class Translatable extends Model
+trait HasTranslations
 {
-    /**
-     * Localized attributes.
-     *
-     * @var array
-     */
-    protected $localizable = [];
-
     /**
      * Contains the actual translations.
      *
@@ -37,14 +30,14 @@ abstract class Translatable extends Model
      *
      * @return mixed
      */
-    public function __get($attribute)
+    public function getAttribute($attribute)
     {
         // Check if requested attribute is a translatable attribute
-        if ($this->isTranslatableAttribute($attribute)) {
-            return $this->getTranslatedLocales($attribute);
+        if (! $this->isTranslatableAttribute($attribute)) {
+            return parent::getAttribute($attribute);
         }
 
-        return parent::__get($attribute);
+        return $this->getTranslatedLocales($attribute);
     }
 
     /**
@@ -55,29 +48,31 @@ abstract class Translatable extends Model
      *
      * @return mixed
      */
-    public function __set($attribute, $value)
+    public function setAttribute($attribute, $value)
     {
         // Check if requested attribute is a translatable attribute
-        if ($this->isTranslatableAttribute($attribute)) {
-            if ($value instanceof Translatable) {
-                foreach ($value->translations() as $locale => $v) {
-                    $this->setTranslation($locale, $attribute, $v);
-                }
-            } else {
-                $this->setTranslation(\App::getLocale(), $attribute, $value);
-            }
-
-            return;
+        if (! $this->isTranslatableAttribute($attribute)) {
+            return parent::setAttribute($attribute, $value);
         }
 
-        return parent::__set($attribute, $value);
+        if (is_array($value)) {
+            $value = Translation::make($value);
+        }
+
+        if ($value instanceof Translation) {
+            foreach ($value->translations() as $locale => $v) {
+                $this->setTranslation($locale, $attribute, $v);
+            }
+        } else {
+            $this->setTranslation(\App::getLocale(), $attribute, $value);
+        }
+
+        return;
     }
 
-    public static function boot()
+    public static function bootHasTranslations()
     {
-        parent::boot();
-
-        self::saved(function ($model) {
+        static::saved(function ($model) {
             $model->commitTranslations();
         });
     }
@@ -141,7 +136,7 @@ abstract class Translatable extends Model
     public function setAllTranslations($translations)
     {
         $this->translations = $translations;
-        $this->dirty        = true;
+        $this->dirty = true;
 
         return $this;
     }
@@ -214,12 +209,12 @@ abstract class Translatable extends Model
             return $output;
         });
 
-        return new Translatable($value);
+        return new Translation($value);
     }
 
     public function getTranslationsTable()
     {
-        return $this->table . '_translations';
+        return $this->getTable() . '_translations';
     }
 
     public function getLocalizable()
@@ -255,7 +250,7 @@ abstract class Translatable extends Model
 
         if (! $joined) {
             // Get the table + field names for the join
-            $t  = $this->getTable() . '.' . $this->getKeyName();
+            $t = $this->getTable() . '.' . $this->getKeyName();
             $tt = $this->getTranslationsTable() . '.' . $this->getKeyName();
 
             // Join the translations table
