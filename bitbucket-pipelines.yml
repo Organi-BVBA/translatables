@@ -1,0 +1,23 @@
+
+pipelines:
+  default:
+    - step:
+        name: Run tests
+        image: php:7.4-fpm
+        caches:
+            - composer
+        script:
+          # Setup container
+          - apt-get update && apt-get install -qy git curl libmcrypt-dev libxml2-dev wget libzip-dev libpng-dev
+          - docker-php-ext-install bcmath zip gd
+          - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+            # Install global packages for linting
+          - composer global require "squizlabs/php_codesniffer=*"
+          - composer global require "friendsofphp/php-cs-fixer"
+            # Run linters
+          - ~/.composer/vendor/bin/phpcs -n
+          - ~/.composer/vendor/bin/php-cs-fixer fix --config .php-cs-fixer.dist.php --dry-run
+            # Install local packages for phpstan
+          - composer install
+            # Run phpstan
+          - ./vendor/bin/phpstan analyse --memory-limit=1536M
