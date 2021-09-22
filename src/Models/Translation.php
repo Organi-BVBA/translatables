@@ -7,7 +7,7 @@ use Illuminate\Support\Arr;
 class Translation implements \JsonSerializable
 {
     // Should contain an array with keys referring to a locale
-    private $translations;
+    private array $translations;
 
     public function __construct(array $translations = [])
     {
@@ -15,12 +15,12 @@ class Translation implements \JsonSerializable
         $this->translations = $translations;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->get();
     }
 
-    public static function make(array $translations = [])
+    public static function make(array $translations = []): self
     {
         if (! is_array($translations)) {
             $translations = [\App::getLocale() => $translations];
@@ -34,7 +34,7 @@ class Translation implements \JsonSerializable
      *
      * @param null|mixed $locale
      */
-    public function get($locale = null)
+    public function get($locale = null): string
     {
         if (! $locale) {
             $locale = \App::getLocale();
@@ -44,11 +44,12 @@ class Translation implements \JsonSerializable
         return (string) Arr::get($this->translations, $locale, '');
     }
 
-    public function translations()
+    public function translations(): array
     {
         return $this->translations;
     }
 
+    // @return string|array
     public function jsonSerialize()
     {
         // Check if locale/language property is set on the request.
