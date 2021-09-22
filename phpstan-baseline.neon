@@ -1,0 +1,22 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Call to an undefined method Organi\\\\Translatables\\\\TranslatablesServiceProvider\\:\\:foreign\\(\\)\\.$#"
+			count: 1
+			path: src/TranslatablesServiceProvider.php
+
+		-
+			message: "#^Call to an undefined method Organi\\\\Translatables\\\\TranslatablesServiceProvider\\:\\:foreignId\\(\\)\\.$#"
+			count: 1
+			path: src/TranslatablesServiceProvider.php
+
+		-
+			message: "#^Call to an undefined method Organi\\\\Translatables\\\\TranslatablesServiceProvider\\:\\:string\\(\\)\\.$#"
+			count: 1
+			path: src/TranslatablesServiceProvider.php
+
+		-
+			message: "#^Call to an undefined method Organi\\\\Translatables\\\\TranslatablesServiceProvider\\:\\:unique\\(\\)\\.$#"
+			count: 1
+			path: src/TranslatablesServiceProvider.php
+
