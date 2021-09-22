@@ -55,6 +55,10 @@ trait HasTranslations
             return parent::setAttribute($attribute, $value);
         }
 
+        if (is_array($value)) {
+            $value = Translation::make($value);
+        }
+
         if ($value instanceof Translation) {
             foreach ($value->translations() as $locale => $v) {
                 $this->setTranslation($locale, $attribute, $v);
