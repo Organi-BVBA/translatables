@@ -6,12 +6,16 @@ use Illuminate\Contracts\Validation\Rule;
 
 class Translatable implements Rule
 {
+    // When soft mode is false the passed translation object should
+    // contain all accepted locales
+    protected bool $soft;
+
     /**
      * Create a new rule instance.
      */
-    public function __construct()
+    public function __construct(bool $soft = true)
     {
-        //
+        $this->soft = $soft;
     }
 
     /**
@@ -28,7 +32,7 @@ class Translatable implements Rule
         $usedLocales = array_keys($value);
 
         return is_array($value)
-            && count($value) === count($locales)
+            && (count($value) === count($locales) || $this->soft)
             && 0 === count(array_diff($usedLocales, $locales));
     }
 
