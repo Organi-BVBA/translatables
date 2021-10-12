@@ -6,7 +6,7 @@
         "laravel",
         "translatables"
     ],
-    "homepage": "https://gitlab.com/Organi/translatables",
+    "homepage": "https://bitbucket.org/organi_team/translatables",
     "license": "MIT",
     "require": {
         "php": ">=7.4",
