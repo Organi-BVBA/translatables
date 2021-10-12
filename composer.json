@@ -9,7 +9,7 @@
     "homepage": "https://gitlab.com/Organi/translatables",
     "license": "MIT",
     "require": {
-        "php": ">=7.2",
+        "php": ">=7.4",
         "illuminate/contracts": "^8.37",
         "illuminate/database": "^8.61",
         "illuminate/support": "^8.50",
