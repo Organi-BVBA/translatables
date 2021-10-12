@@ -1,10 +1,9 @@
 <?php
 
-namespace RoobieBoobieee\Translatables;
+namespace Organi\Translatables;
 
-use Illuminate\Database\Schema\Blueprint;
-use RoobieBoobieee\Translatables\Commands\TranslatablesCommand;
 use Spatie\LaravelPackageTools\Package;
+use Illuminate\Database\Schema\Blueprint;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class TranslatablesServiceProvider extends PackageServiceProvider
@@ -18,11 +17,7 @@ class TranslatablesServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('translatables')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_translatables_table')
-            ->hasCommand(TranslatablesCommand::class);
-
+            ->hasConfigFile();
 
         Blueprint::macro('translations', function ($table) {
             $this->foreignId('id');
