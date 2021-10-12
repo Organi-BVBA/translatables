@@ -1,4 +1,3 @@
-
 pipelines:
   default:
     - step:
@@ -7,17 +6,25 @@ pipelines:
         caches:
             - composer
         script:
-          # Setup container
           - apt-get update && apt-get install -qy git curl libmcrypt-dev libxml2-dev wget libzip-dev libpng-dev
           - docker-php-ext-install bcmath zip gd
           - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-            # Install global packages for linting
+          - composer install
           - composer global require "squizlabs/php_codesniffer=*"
           - composer global require "friendsofphp/php-cs-fixer"
-            # Run linters
           - ~/.composer/vendor/bin/phpcs -n
           - ~/.composer/vendor/bin/php-cs-fixer fix --config .php-cs-fixer.dist.php --dry-run
-            # Install local packages for phpstan
-          - composer install
-            # Run phpstan
-          - ./vendor/bin/phpstan analyse --memory-limit=1536M
+            # phpstan
+          - vendor/bin/phpstan analyse --memory-limit=2G
+            # pest
+          - vendor/bin/pest
+    - step:
+        name: Trigger composer update
+        script:
+          - pipe: atlassian/trigger-pipeline:4.2.1
+            variables:
+              BITBUCKET_USERNAME: $BITBUCKET_USERNAME
+              BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
+              REPOSITORY: 'composer.organi.be'
+              ACCOUNT: 'organi_team'
+              CUSTOM_PIPELINE_NAME: 'deploy'

@@ -5,7 +5,6 @@ namespace Organi\Translatables;
 use Spatie\LaravelPackageTools\Package;
 use Illuminate\Database\Schema\Blueprint;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Organi\Translatables\Commands\TranslatablesCommand;
 
 class TranslatablesServiceProvider extends PackageServiceProvider
 {
