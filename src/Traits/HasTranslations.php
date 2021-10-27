@@ -276,6 +276,21 @@ trait HasTranslations
         return parent::delete();
     }
 
+    public static function translationsTable(): string
+    {
+        return (new static())->getTranslationsTable();
+    }
+
+    public static function translationsColumn(string $column): string
+    {
+        return (new static())->qualifyTranslationsColumn($column);
+    }
+
+    public function qualifyTranslationsColumn(string $column): string
+    {
+        return implode('.', [$this->getTranslationsTable(), $column]);
+    }
+
     protected function addLocalizableAttributesToArray(array $attributes)
     {
         foreach ($this->localizable as $key) {
