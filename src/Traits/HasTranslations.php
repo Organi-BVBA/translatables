@@ -200,7 +200,12 @@ trait HasTranslations
     public function getTranslatedLocales($attribute)
     {
         $value = array_reduce($this->locales(), function ($output, $locale) use ($attribute) {
+            // Get the translated value
             $value = Arr::get($this->translatable($locale), $attribute, '');
+
+            // Run in through transformModelValue, this way we're able to use
+            // mutators with translatable attributes
+            $value = $this->transformModelValue($attribute, $value);
 
             $output[$locale] = $value;
 
