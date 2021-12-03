@@ -52,18 +52,22 @@ trait HasTranslations
     {
         // Check if requested attribute is a translatable attribute
         if (! $this->isTranslatableAttribute($attribute)) {
+            // If not, execute default eloquent logic
             return parent::setAttribute($attribute, $value);
         }
 
+        // If the value is an array, turn it into a translation object
         if (is_array($value)) {
             $value = Translation::make($value);
         }
 
+        // If the value is a translation, set all locales from the translation
         if ($value instanceof Translation) {
             foreach ($value->translations() as $locale => $v) {
                 $this->setTranslation($locale, $attribute, $v);
             }
         } else {
+            // Otherwise set the value for the current locale
             $this->setTranslation(\App::getLocale(), $attribute, $value);
         }
     }
