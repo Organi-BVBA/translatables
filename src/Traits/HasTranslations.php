@@ -63,7 +63,12 @@ trait HasTranslations
 
         // If the value is a translation, set all locales from the translation
         if ($value instanceof Translation) {
-            foreach ($value->translations() as $locale => $v) {
+            // Loop over all locales,
+            // so if a locale is missing from the translations object we'll clear it
+            foreach ($this->locales() as $locale) {
+                // Get the value for this locale
+                $v = Arr::get($value->translations(), $locale);
+                // Set it on the model
                 $this->setTranslation($locale, $attribute, $v);
             }
         } else {
