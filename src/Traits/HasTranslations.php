@@ -77,6 +77,10 @@ trait HasTranslations
         }
     }
 
+    /**
+     * Boot the trait. Listen to the saved event and save the translations
+     * when it happens.
+     */
     public static function bootHasTranslations()
     {
         static::saved(function ($model) {
@@ -84,14 +88,22 @@ trait HasTranslations
         });
     }
 
-    public function setTranslations($locale, $attributes)
+    /**
+     * Set multiple properties for a single locale.
+     */
+    public function setTranslations(string $locale, array $attributes): void
     {
         foreach ($attributes as $attribute => $value) {
             $this->setTranslation($locale, $attribute, $value);
         }
     }
 
-    public function setTranslation($locale, $attribute, $value)
+    /**
+     * Set a single propertie for a single locale.
+     *
+     * @param mixed $value
+     */
+    public function setTranslation(string $locale, string $attribute, $value): void
     {
         // Check if the given locale is allowed
         if (! in_array($locale, $this->locales())) {
@@ -116,15 +128,13 @@ trait HasTranslations
             Arr::set($this->translations, $locale, $this->getEmptyTranslationsArray());
         }
 
-        return Arr::set($this->translations, implode('.', [$locale, $attribute]), $value);
+        Arr::set($this->translations, implode('.', [$locale, $attribute]), $value);
     }
 
     /**
      * Represents the translations in the current or given locale.
-     *
-     * @param null|mixed $locale
      */
-    public function translatable($locale = null)
+    public function translatable(?string $locale = null): array
     {
         if (! $locale) {
             $locale = \App::getLocale();
@@ -137,10 +147,9 @@ trait HasTranslations
     /**
      * Set translations (for easy replication).
      *
-     * @param mixed $translatables
-     * @param mixed $translations
+     * @return $this
      */
-    public function setAllTranslations($translations)
+    public function setAllTranslations(array $translations)
     {
         $this->translations = $translations;
         $this->dirty        = true;
@@ -151,7 +160,7 @@ trait HasTranslations
     /**
      * Represents all translations.
      */
-    public function translatables()
+    public function translatables(): array
     {
         // If we already retrieved the translations -> use the one in memory
         if ($this->translations) {
@@ -183,7 +192,7 @@ trait HasTranslations
     /**
      * Save translations to database.
      */
-    public function commitTranslations()
+    public function commitTranslations(): void
     {
         // If nothing changed -> dont do anything
         if (! $this->dirty || ! $this->translations) {
@@ -211,12 +220,17 @@ trait HasTranslations
         });
     }
 
-    public function isTranslatableAttribute($attribute)
+    /**
+     * Check if the given attribute is in the localizable array.
+     *
+     * @param mixed $attribute
+     */
+    public function isTranslatableAttribute(string $attribute): bool
     {
         return in_array($attribute, $this->localizable);
     }
 
-    public function getTranslatedLocales($attribute)
+    public function getTranslatedLocales(string $attribute): Translation
     {
         $value = array_reduce($this->locales(), function ($output, $locale) use ($attribute) {
             // Get the translated value
@@ -234,24 +248,24 @@ trait HasTranslations
         return new Translation($value);
     }
 
-    public function getTranslationsTable()
+    public function getTranslationsTable(): string
     {
         return $this->getTable() . '_translations';
     }
 
-    public function getLocalizable()
+    public function getLocalizable(): array
     {
         return $this->localizable;
     }
 
-    public function attributesToArray($localizeOnly = false)
+    public function attributesToArray(bool $localizeOnly = false): array
     {
         return $this->addLocalizableAttributesToArray(
             $localizeOnly ? [] : parent::attributesToArray()
         );
     }
 
-    public function toTranslatedArray($locale, $localizeOnly = false)
+    public function toTranslatedArray(string $locale, bool $localizeOnly = false): array
     {
         return array_merge(
             $localizeOnly ? [] : parent::attributesToArray(),
@@ -259,7 +273,12 @@ trait HasTranslations
         );
     }
 
-    public function scopeWhereTranslation($query, $column, $value): Builder
+    /**
+     * Add scope.
+     *
+     * @param mixed $value
+     */
+    public function scopeWhereTranslation(Builder $query, string $column, $value): Builder
     {
         // Get the table + field name for the where clause
         $column = $this->getTranslationsTable() . '.' . $column;
@@ -315,7 +334,7 @@ trait HasTranslations
         return implode('.', [$this->getTranslationsTable(), $column]);
     }
 
-    protected function addLocalizableAttributesToArray(array $attributes)
+    protected function addLocalizableAttributesToArray(array $attributes): array
     {
         foreach ($this->localizable as $key) {
             if (in_array($key, $this->hidden)) {
@@ -331,7 +350,7 @@ trait HasTranslations
         return $attributes;
     }
 
-    protected function locales()
+    protected function locales(): array
     {
         return config('translatables.accepted_locales');
     }
@@ -339,7 +358,7 @@ trait HasTranslations
     /**
      * Returns an array with all translatable attributes as empty string.
      */
-    private function getEmptyTranslationsArray()
+    private function getEmptyTranslationsArray(): array
     {
         return array_fill_keys($this->localizable, '');
     }
