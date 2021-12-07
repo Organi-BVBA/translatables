@@ -190,15 +190,25 @@ trait HasTranslations
             return;
         }
 
-        foreach ($this->translations as $locale => $translatable) {
-            DB::table($this->getTranslationsTable())
-                ->updateOrInsert(
-                    [
-                        $this->getKeyName() => $this->getKey(), 'locale' => $locale,
-                    ],
-                    $translatable
-                );
-        }
+        DB::transaction(function () {
+            foreach ($this->translations as $locale => $translatable) {
+                if (null === max($translatable)) {
+                    // All translatable values are null. Delete the record.
+                    DB::table($this->getTranslationsTable())
+                        ->where($this->getKeyName(), $this->getKey())
+                        ->where('locale', $locale)
+                        ->delete();
+                } else {
+                    DB::table($this->getTranslationsTable())
+                        ->updateOrInsert(
+                            [
+                                $this->getKeyName() => $this->getKey(), 'locale' => $locale,
+                            ],
+                            $translatable
+                        );
+                }
+            }
+        });
     }
 
     public function isTranslatableAttribute($attribute)
