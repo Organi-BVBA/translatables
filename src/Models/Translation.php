@@ -45,7 +45,7 @@ class Translation implements \JsonSerializable
     }
 
     /**
-     * Returns the translations in array format
+     * Returns the translations in array format.
      */
     public function translations(): array
     {
@@ -53,7 +53,7 @@ class Translation implements \JsonSerializable
     }
 
     /**
-     * @return string|array
+     * @return array|string
      */
     public function jsonSerialize()
     {
