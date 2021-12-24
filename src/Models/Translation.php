@@ -44,12 +44,17 @@ class Translation implements \JsonSerializable
         return (string) Arr::get($this->translations, $locale, '');
     }
 
+    /**
+     * Returns the translations in array format
+     */
     public function translations(): array
     {
         return $this->translations;
     }
 
-    // @return string|array
+    /**
+     * @return string|array
+     */
     public function jsonSerialize()
     {
         // Check if locale/language property is set on the request.

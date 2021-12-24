@@ -310,6 +310,8 @@ trait HasTranslations
         return $new;
     }
 
+    // TODO: instead of overwriting the delete method. Listen to the models delete event.
+    // Otherwise this trait wouldn't be compatible with other traits that overwrite this method
     public function delete()
     {
         $translations = DB::table($this->getTranslationsTable())
