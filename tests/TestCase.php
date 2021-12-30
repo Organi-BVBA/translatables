@@ -48,11 +48,13 @@ class TestCase extends Orchestra
 
         $app['db']->connection()->getSchemaBuilder()->create('products', function (Blueprint $table) {
             $table->increments('id');
+            $table->timestamps();
         });
 
         $app['db']->connection()->getSchemaBuilder()->create('products_translations', function (Blueprint $table) {
             $table->translations('products');
             $table->string('title');
+            $table->text('description');
         });
     }
 }
