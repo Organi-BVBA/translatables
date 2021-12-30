@@ -21,7 +21,7 @@ class Translation implements \JsonSerializable
     }
 
     /**
-     * @property string|array $translations;
+     * @param array|string $translations;
      */
     public static function make($translations = []): self
     {
