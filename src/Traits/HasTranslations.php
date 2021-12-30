@@ -145,6 +145,18 @@ trait HasTranslations
     }
 
     /**
+     * Set a single property for all available locales.
+     */
+    public function setAllLocales(string $attribute, string $value): Translation
+    {
+        foreach ($this->locales() as $locale) {
+            $this->setTranslation($locale, $attribute, $value);
+        }
+
+        return $this->getAttribute($attribute);
+    }
+
+    /**
      * Set translations (for easy replication).
      *
      * @return $this
