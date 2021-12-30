@@ -86,6 +86,11 @@ trait HasTranslations
         static::saved(function ($model) {
             $model->commitTranslations();
         });
+
+        // Delete the translations when deleting the model
+        static::deleting(function ($model) {
+            $model->deleteTranslations();
+        });
     }
 
     /**
@@ -322,15 +327,11 @@ trait HasTranslations
         return $new;
     }
 
-    // TODO: instead of overwriting the delete method. Listen to the models delete event.
-    // Otherwise this trait wouldn't be compatible with other traits that overwrite this method
-    public function delete()
+    public function deleteTranslations()
     {
         $translations = DB::table($this->getTranslationsTable())
             ->where($this->getKeyName(), $this->getKey())
             ->delete();
-
-        return parent::delete();
     }
 
     public static function translationsTable(): string
