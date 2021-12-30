@@ -99,7 +99,7 @@ trait HasTranslations
     }
 
     /**
-     * Set a single propertie for a single locale.
+     * Set a single property for a single locale.
      *
      * @param mixed $value
      */
