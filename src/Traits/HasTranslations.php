@@ -24,6 +24,15 @@ trait HasTranslations
     private $dirty = false;
 
     /**
+     * Locale that should be returned when casting to array
+     * ex: This is useful when pushing a model to a search index.
+     * If you want to have an index per locale.
+     * You'll split out each model for every locale you have
+     * and set this attribute on the model.
+     */
+    private ?string $outputLocale = null;
+
+    /**
      * Magic method for retrieving a missing attribute.
      *
      * @param string $attribute
@@ -349,6 +358,28 @@ trait HasTranslations
         return implode('.', [$this->getTranslationsTable(), $column]);
     }
 
+    // Return an array of all set locales for this model
+    public function getActiveLocales(): array
+    {
+        return array_keys($this->translatables());
+    }
+
+    public function setOutputLocale(?string $locale): self
+    {
+        if (! in_array($locale, $this->locales())) {
+            throw new \RuntimeException('Locale \'' . $locale . '\' is not allowed');
+        }
+
+        $this->outputLocale = $locale;
+
+        return $this;
+    }
+
+    public function getOutputLocale(): ?string
+    {
+        return $this->outputLocale;
+    }
+
     protected function addLocalizableAttributesToArray(array $attributes): array
     {
         foreach ($this->localizable as $key) {
@@ -359,7 +390,14 @@ trait HasTranslations
             if (count($this->visible) && ! in_array($key, $this->visible)) {
                 continue;
             }
-            $attributes[$key] = $this->getTranslatedLocales($key);
+
+            $translation = $this->getTranslatedLocales($key);
+
+            if (! is_null($this->getOutputLocale())) {
+                $attributes[$key] = $translation->get($this->getOutputLocale());
+            } else {
+                $attributes[$key] = $translation;
+            }
         }
 
         return $attributes;
