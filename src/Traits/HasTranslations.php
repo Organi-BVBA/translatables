@@ -196,7 +196,7 @@ trait HasTranslations
         // TODO: Now this an array. Should prolly return a custom translations object
         $translations = DB::table($this->getTranslationsTable())
             ->where($this->getKeyName(), $this->getKey())
-            ->select(array_merge(['locale'], $this->localizable))
+            ->select(array_merge([$this->getLocaleColumn()], $this->localizable))
             ->get();
 
         // Empty translations array
@@ -231,13 +231,13 @@ trait HasTranslations
                     // All translatable values are null. Delete the record.
                     DB::table($this->getTranslationsTable())
                         ->where($this->getKeyName(), $this->getKey())
-                        ->where('locale', $locale)
+                        ->where($this->getLocaleColumn(), $locale)
                         ->delete();
                 } else {
                     DB::table($this->getTranslationsTable())
                         ->updateOrInsert(
                             [
-                                $this->getKeyName() => $this->getKey(), 'locale' => $locale,
+                                $this->getKeyName() => $this->getKey(), $this->getLocaleColumn() => $locale,
                             ],
                             $translatable
                         );
@@ -380,6 +380,10 @@ trait HasTranslations
         return $this->outputLocale;
     }
 
+    public function getLocaleColumn(): ?string
+    {
+        return 'locale';
+    }
     protected function addLocalizableAttributesToArray(array $attributes): array
     {
         foreach ($this->localizable as $key) {
