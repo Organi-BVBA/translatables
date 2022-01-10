@@ -41,3 +41,34 @@ it('translations get deleted when deleting product', function () {
     $newCount = DB::table($this->model->getTranslationsTable())->count();
     expect($newCount)->toBe($count);
 });
+
+it('can use whereTranslation', function () {
+    $product = new Product();
+    $product->setAllLocales('title', faker()->sentence());
+    $product->save();
+
+    $search = Product::whereTranslation('title', $product->title->get('nl'))->first();
+
+    expect($search->id)->toBe($product->id);
+});
+
+it('can use whereTranslation with a specific locale', function () {
+    $product = new Product();
+
+    // Generate a separate string for every locale
+    foreach ($product->locales() as $locale) {
+        $title = faker()->sentence();
+
+        $product->setTranslation($locale, 'title', $title);
+    }
+
+    $product->save();
+
+    // Different locales, no result should be returned
+    $search = Product::whereTranslation('title', $product->title->get('en'), 'nl')->first();
+    expect($search)->toBeNull();
+
+    // Same locales. We should be able to find the product
+    $search = Product::whereTranslation('title', $product->title->get('nl'), 'nl')->first();
+    expect($search->id)->toBe($product->id);
+});

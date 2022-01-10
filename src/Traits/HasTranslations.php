@@ -304,7 +304,7 @@ trait HasTranslations
      *
      * @param mixed $value
      */
-    public function scopeWhereTranslation(Builder $query, string $column, $value): Builder
+    public function scopeWhereTranslation(Builder $query, string $column, $value, string $locale = null): Builder
     {
         // Get the table + field name for the where clause
         $column = $this->getTranslationsTable() . '.' . $column;
@@ -322,6 +322,10 @@ trait HasTranslations
 
             // Join the translations table
             $query->join($this->getTranslationsTable(), $t, '=', $tt);
+        }
+
+        if (! is_null($locale)) {
+            $query->where($this->getLocaleColumn(), $locale);
         }
 
         return $query->where($column, $value);
@@ -384,6 +388,12 @@ trait HasTranslations
     {
         return 'locale';
     }
+
+    public function locales(): array
+    {
+        return config('translatables.accepted_locales');
+    }
+
     protected function addLocalizableAttributesToArray(array $attributes): array
     {
         foreach ($this->localizable as $key) {
@@ -405,11 +415,6 @@ trait HasTranslations
         }
 
         return $attributes;
-    }
-
-    protected function locales(): array
-    {
-        return config('translatables.accepted_locales');
     }
 
     /**
