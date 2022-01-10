@@ -72,4 +72,9 @@ class Translation implements \JsonSerializable
 
         return $this->translations;
     }
+
+    public function isEmpty(): bool
+    {
+        return '' === implode('', $this->translations);
+    }
 }
