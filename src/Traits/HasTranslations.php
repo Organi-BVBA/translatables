@@ -142,6 +142,24 @@ trait HasTranslations
             Arr::set($this->translations, $locale, $this->getEmptyTranslationsArray());
         }
 
+        /*
+         * We store null values on purpose as ''
+         *
+         * From High Performance MySQL, 3rd Edition
+         *
+         *  - Avoid NULL if possible.
+         * A lot of tables include nullable columns even when the application
+         * does not need to store NULL (the absence of a value),
+         * merely because it’s the default.
+         * It’s usually best to specify columns as NOT NULL unless you intend
+         * to store NULL in them. It’s harder for MySQL to optimize queries
+         * that refer to nullable columns, because they make indexes,
+         * index statistics, and value comparisons more complicated.
+         */
+        if (is_null($value)) {
+            $value = '';
+        }
+
         Arr::set($this->translations, implode('.', [$locale, $attribute]), $value);
     }
 
@@ -227,8 +245,8 @@ trait HasTranslations
 
         DB::transaction(function () {
             foreach ($this->translations as $locale => $translatable) {
-                if (null === max($translatable)) {
-                    // All translatable values are null. Delete the record.
+                if (null === implode('', $translatable) || '' === implode('', $translatable)) {
+                    // All translatable values are null or empty. Delete the record.
                     DB::table($this->getTranslationsTable())
                         ->where($this->getKeyName(), $this->getKey())
                         ->where($this->getLocaleColumn(), $locale)
