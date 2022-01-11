@@ -394,6 +394,14 @@ trait HasTranslations
         return config('translatables.accepted_locales');
     }
 
+    /**
+     * Returns an array with all translatable attributes as empty string.
+     */
+    public function getEmptyTranslation(): Translation
+    {
+        return Translation::make(array_fill_keys($this->locales(), ''));
+    }
+
     protected function addLocalizableAttributesToArray(array $attributes): array
     {
         foreach ($this->localizable as $key) {
