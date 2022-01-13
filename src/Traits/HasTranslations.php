@@ -238,6 +238,8 @@ trait HasTranslations
      */
     public function commitTranslations(): void
     {
+        // TODO: Do we want to touch the base record when just the translations are saved?
+
         // If nothing changed -> dont do anything
         if (! $this->dirty || ! $this->translations) {
             return;
