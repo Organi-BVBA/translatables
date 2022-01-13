@@ -238,8 +238,6 @@ trait HasTranslations
      */
     public function commitTranslations(): void
     {
-        // TODO: Do we want to touch the base record when just the translations are saved?
-
         // If nothing changed -> dont do anything
         if (! $this->dirty || ! $this->translations) {
             return;
@@ -263,6 +261,12 @@ trait HasTranslations
                         );
                 }
             }
+        });
+
+        // Touch the model without raising events
+        // Otherwise we'll end up in an infinite loop
+        static::withoutEvents(function () {
+            return $this->touch();
         });
     }
 
