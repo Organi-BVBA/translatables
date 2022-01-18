@@ -65,10 +65,10 @@ it('can use whereTranslation with a specific locale', function () {
     $product->save();
 
     // Different locales, no result should be returned
-    $search = Product::whereTranslation('title', $product->title->get('en'), 'nl')->first();
+    $search = Product::whereTranslation('title', $product->title->get('en'), '=', 'nl')->first();
     expect($search)->toBeNull();
 
     // Same locales. We should be able to find the product
-    $search = Product::whereTranslation('title', $product->title->get('nl'), 'nl')->first();
+    $search = Product::whereTranslation('title', $product->title->get('nl'), '=', 'nl')->first();
     expect($search->id)->toBe($product->id);
 });
