@@ -331,7 +331,7 @@ trait HasTranslations
      * @param ?mixed $operator
      * @param ?mixed $value
      */
-    public function scopeWhereTranslation(Builder $query, string $column, $operator = null, $value = null, string $locale = null): Builder
+    public function scopeWhereTranslation(Builder $query, string $column, $operator = null, $value = null, string $locale = null): TranslatablesBuilder
     {
         [$value, $operator] = $query->getQuery()->prepareValueAndOperator(
             $value,
@@ -342,7 +342,7 @@ trait HasTranslations
         // Get the table + field name for the where clause
         $column = $this->getTranslationsTable() . '.' . $column;
 
-        $query = $this->joinTranslationsTable($query->getQuery());
+        $this->joinTranslationsTable($query->getQuery());
 
         if (! is_null($locale)) {
             $query->where($this->getLocaleColumn(), $locale);
@@ -351,10 +351,11 @@ trait HasTranslations
         return $query->where($column, $operator, $value);
     }
 
-    public function joinTranslationsTable(QueryBuilder $query): QueryBuilder
+    public function joinTranslationsTable(QueryBuilder $query): void
     {
         // Check if table is already joined
         $joined = false;
+
         foreach ($query->joins ?: [] as $join) {
             $joined = $joined || $join->table === $this->getTranslationsTable();
         }
@@ -369,8 +370,6 @@ trait HasTranslations
 
             // $query->select($this->getTable() . '.*');
         }
-
-        return $query;
     }
 
     public function replicate(array $except = null)
