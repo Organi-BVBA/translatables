@@ -6,6 +6,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 use Organi\Translatables\Models\Translation;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Organi\Translatables\Builders\TranslatablesBuilder;
 
 trait HasTranslations
 {
@@ -340,9 +342,20 @@ trait HasTranslations
         // Get the table + field name for the where clause
         $column = $this->getTranslationsTable() . '.' . $column;
 
+        $query = $this->joinTranslationsTable($query->getQuery());
+
+        if (! is_null($locale)) {
+            $query->where($this->getLocaleColumn(), $locale);
+        }
+
+        return $query->where($column, $operator, $value);
+    }
+
+    public function joinTranslationsTable(QueryBuilder $query): QueryBuilder
+    {
         // Check if table is already joined
         $joined = false;
-        foreach ($query->getQuery()->joins ?: [] as $join) {
+        foreach ($query->joins ?: [] as $join) {
             $joined = $joined || $join->table === $this->getTranslationsTable();
         }
 
@@ -357,11 +370,7 @@ trait HasTranslations
             // $query->select($this->getTable() . '.*');
         }
 
-        if (! is_null($locale)) {
-            $query->where($this->getLocaleColumn(), $locale);
-        }
-
-        return $query->where($column, $operator, $value);
+        return $query;
     }
 
     public function replicate(array $except = null)
@@ -373,6 +382,9 @@ trait HasTranslations
         return $new;
     }
 
+    /**
+     * Delete translations for a specific model.
+     */
     public function deleteTranslations()
     {
         $translations = DB::table($this->getTranslationsTable())
@@ -433,6 +445,11 @@ trait HasTranslations
     public function getEmptyTranslation(): Translation
     {
         return Translation::make(array_fill_keys($this->locales(), ''));
+    }
+
+    public function newEloquentBuilder($query)
+    {
+        return new TranslatablesBuilder($query);
     }
 
     protected function addLocalizableAttributesToArray(array $attributes): array
