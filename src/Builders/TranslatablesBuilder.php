@@ -13,7 +13,7 @@ class TranslatablesBuilder extends Builder
 
         // @phpstan-ignore-next-line
         DB::table($this->model->getTranslationsTable())
-            ->whereIn($key, $this->query->pluck($key))
+            ->whereIn($key, $this->toBase()->pluck($key))
             ->delete();
 
         return parent::delete();
