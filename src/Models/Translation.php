@@ -20,7 +20,10 @@ class Translation implements \JsonSerializable
         return $this->get();
     }
 
-    public static function make(array $translations = []): self
+    /**
+     * @param array|string $translations;
+     */
+    public static function make($translations = []): self
     {
         if (! is_array($translations)) {
             $translations = [\App::getLocale() => $translations];
@@ -44,12 +47,17 @@ class Translation implements \JsonSerializable
         return (string) Arr::get($this->translations, $locale, '');
     }
 
+    /**
+     * Returns the translations in array format.
+     */
     public function translations(): array
     {
         return $this->translations;
     }
 
-    // @return string|array
+    /**
+     * @return array|string
+     */
     public function jsonSerialize()
     {
         // Check if locale/language property is set on the request.
@@ -63,5 +71,10 @@ class Translation implements \JsonSerializable
         }
 
         return $this->translations;
+    }
+
+    public function isEmpty(): bool
+    {
+        return '' === implode('', $this->translations);
     }
 }

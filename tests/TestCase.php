@@ -2,6 +2,8 @@
 
 namespace Organi\Translatables\Tests;
 
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Organi\Translatables\TranslatablesServiceProvider;
@@ -15,6 +17,8 @@ class TestCase extends Orchestra
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->setupDatabase($this->app);
 
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'Organi\\Translatables\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
@@ -36,5 +40,21 @@ class TestCase extends Orchestra
         return [
             TranslatablesServiceProvider::class,
         ];
+    }
+
+    protected function setupDatabase($app)
+    {
+        Schema::dropAllTables();
+
+        $app['db']->connection()->getSchemaBuilder()->create('products', function (Blueprint $table) {
+            $table->increments('id');
+            $table->timestamps();
+        });
+
+        $app['db']->connection()->getSchemaBuilder()->create('products_translations', function (Blueprint $table) {
+            $table->translations('products');
+            $table->string('title');
+            $table->text('description');
+        });
     }
 }
