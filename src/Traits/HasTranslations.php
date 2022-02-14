@@ -4,6 +4,7 @@ namespace Organi\Translatables\Traits;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\App;
 use Illuminate\Database\Eloquent\Builder;
 use Organi\Translatables\Models\Translation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -325,28 +326,53 @@ trait HasTranslations
         );
     }
 
+    public function scopeOrderByTranslation(
+        Builder $query,
+        string $column,
+        string $locale = null,
+        string $direction = 'asc'
+    ): TranslatablesBuilder {
+        $this->joinTranslationsTable($query->getQuery());
+
+        if (is_null($locale)) {
+            $locale = App::getLocale();
+        }
+
+        $query->where($this->getLocaleColumn(), $locale);
+
+        // Get the table + field name for the where clause
+        $column = $this->getTranslationsTable() . '.' . $column;
+
+        return $query->orderBy($column, $direction);
+    }
+
     /**
      * Add scope.
      *
      * @param ?mixed $operator
      * @param ?mixed $value
      */
-    public function scopeWhereTranslation(Builder $query, string $column, $operator = null, $value = null, string $locale = null): TranslatablesBuilder
-    {
+    public function scopeWhereTranslation(
+        Builder $query,
+        string $column,
+        $operator = null,
+        $value = null,
+        string $locale = null
+    ): TranslatablesBuilder {
         [$value, $operator] = $query->getQuery()->prepareValueAndOperator(
             $value,
             $operator,
             2 === func_num_args()
         );
 
-        // Get the table + field name for the where clause
-        $column = $this->getTranslationsTable() . '.' . $column;
-
         $this->joinTranslationsTable($query->getQuery());
 
         if (! is_null($locale)) {
             $query->where($this->getLocaleColumn(), $locale);
         }
+
+        // Get the table + field name for the where clause
+        $column = $this->getTranslationsTable() . '.' . $column;
 
         return $query->where($column, $operator, $value);
     }
