@@ -116,6 +116,11 @@ Or set a single translation for a single locale
 $product->setTranslation('nl', 'name', 'Lorem ipsum dolor sit amet');
 ```
 
+Or set a single string for all locales
+```php
+$product->setAllLocales('title', 'Lorem ipsum dolor sit amet');
+```
+
 ### Getting translatable fields
 Getting a translatable fields will return a `Translation` object.
 
@@ -134,10 +139,20 @@ Or you can get a specific locale:
 echo $product->name->get('en');
 ```
 
-### Filtering on translatable fields
+### Filtering on a translatable fields
 This package provides a `whereTranslation` function.
 ```php
 $product = Product::whereTranslation('title', 'Lorem ipsum dolor sit amet')->first();
+```
+
+### Sorting on a translatable fields
+This package provides a `sortByTranslation` function.
+The function has 3 parameters:
+- `field`: field that should be used for the sorting
+- `locale`: locale that should be used for the sorting
+- `direction` (optional defaults to `asc`): `asc` or `desc`
+```php
+$product = Product::sortByTranslation('title')->get();
 ```
 
 
