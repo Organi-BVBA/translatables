@@ -20,6 +20,24 @@ class Translation implements \JsonSerializable
         return $this->get();
     }
 
+    public function toBool(): self
+    {
+        $this->translations = array_map(function ($value) {
+            return (bool) $value;
+        }, $this->translations);
+
+        return $this;
+    }
+
+    public function toInteger(): self
+    {
+        $this->translations = array_map(function ($value) {
+            return (int) $value;
+        }, $this->translations);
+
+        return $this;
+    }
+
     /**
      * @param array|string $translations;
      */
