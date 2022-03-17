@@ -17,7 +17,7 @@ class Translation implements \JsonSerializable
 
     public function __toString(): string
     {
-        return $this->get();
+        return (string) $this->get();
     }
 
     public function toBool(): self
@@ -53,16 +53,16 @@ class Translation implements \JsonSerializable
     /**
      * Represents the translations in the current or given locale.
      *
-     * @param null|mixed $locale
+     * @return mixed
      */
-    public function get($locale = null): string
+    public function get(string $locale = null)
     {
         if (! $locale) {
             $locale = \App::getLocale();
         }
 
         // Get the translations in the current locale, or return an empty array if its not set yet
-        return (string) Arr::get($this->translations, $locale, '');
+        return Arr::get($this->translations, $locale, '');
     }
 
     /**
