@@ -145,14 +145,14 @@ This package provides a `whereTranslation` function.
 $product = Product::whereTranslation('title', 'Lorem ipsum dolor sit amet')->first();
 ```
 
-### Sorting on a translatable fields
-This package provides a `sortByTranslation` function.
+### Ordering on a translatable fields
+This package provides a `orderByTranslation` function.
 The function has 3 parameters:
-- `field`: field that should be used for the sorting
-- `locale`: locale that should be used for the sorting
+- `field`: field that should be used for the ordering
+- `locale`: locale that should be used for the ordering
 - `direction` (optional defaults to `asc`): `asc` or `desc`
 ```php
-$product = Product::sortByTranslation('title')->get();
+$products = Product::orderByTranslation('title')->get();
 ```
 
 
