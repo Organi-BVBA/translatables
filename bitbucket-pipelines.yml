@@ -2,7 +2,7 @@ pipelines:
   default:
     - step:
         name: Run tests
-        image: php:7.4-fpm
+        image: php:8.1-fpm
         caches:
             - composer
         script:
