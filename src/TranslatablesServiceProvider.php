@@ -2,8 +2,8 @@
 
 namespace Organi\Translatables;
 
-use Spatie\LaravelPackageTools\Package;
 use Illuminate\Database\Schema\Blueprint;
+use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class TranslatablesServiceProvider extends PackageServiceProvider

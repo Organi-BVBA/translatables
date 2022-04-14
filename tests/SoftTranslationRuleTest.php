@@ -1,7 +1,7 @@
 <?php
 
-use function Pest\Faker\faker;
 use Organi\Translatables\Rules\Translatable;
+use function Pest\Faker\faker;
 
 beforeEach(function () {
     $this->rule = new Translatable();

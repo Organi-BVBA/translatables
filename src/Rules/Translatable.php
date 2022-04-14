@@ -28,7 +28,7 @@ class Translatable implements Rule
      */
     public function passes($attribute, $value)
     {
-        $locales     = config('translatables.accepted_locales');
+        $locales = config('translatables.accepted_locales');
         $usedLocales = array_keys($value);
 
         return is_array($value)

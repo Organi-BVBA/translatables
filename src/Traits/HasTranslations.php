@@ -2,13 +2,13 @@
 
 namespace Organi\Translatables\Traits;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\App;
 use Illuminate\Database\Eloquent\Builder;
-use Organi\Translatables\Models\Translation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 use Organi\Translatables\Builders\TranslatablesBuilder;
+use Organi\Translatables\Models\Translation;
 
 trait HasTranslations
 {
@@ -199,7 +199,7 @@ trait HasTranslations
     public function setAllTranslations(array $translations)
     {
         $this->translations = $translations;
-        $this->dirty        = true;
+        $this->dirty = true;
 
         return $this;
     }
@@ -388,7 +388,7 @@ trait HasTranslations
 
         if (! $joined) {
             // Get the table + field names for the join
-            $t  = $this->getTable() . '.' . $this->getKeyName();
+            $t = $this->getTable() . '.' . $this->getKeyName();
             $tt = $this->getTranslationsTable() . '.' . $this->getKeyName();
 
             // Join the translations table

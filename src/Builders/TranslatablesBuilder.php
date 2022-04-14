@@ -2,8 +2,8 @@
 
 namespace Organi\Translatables\Builders;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class TranslatablesBuilder extends Builder
 {
