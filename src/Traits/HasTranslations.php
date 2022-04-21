@@ -331,7 +331,7 @@ trait HasTranslations
         string $column,
         string $locale = null,
         string $direction = 'asc'
-    ): TranslatablesBuilder {
+    ): Builder | TranslatablesBuilder {
         $this->joinTranslationsTable($query->getQuery());
 
         if (is_null($locale)) {
@@ -358,7 +358,7 @@ trait HasTranslations
         $operator = null,
         $value = null,
         string $locale = null
-    ): TranslatablesBuilder {
+    ): Builder | TranslatablesBuilder {
         [$value, $operator] = $query->getQuery()->prepareValueAndOperator(
             $value,
             $operator,
