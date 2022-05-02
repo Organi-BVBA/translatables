@@ -368,11 +368,11 @@ trait HasTranslations
         $this->joinTranslationsTable($query->getQuery());
 
         if (! is_null($locale)) {
-            $query->where($this->getLocaleColumn(), $locale);
+            $query->where($this->qualifyTranslationsColumn($this->getLocaleColumn()), $locale);
         }
 
         // Get the table + field name for the where clause
-        $column = $this->getTranslationsTable() . '.' . $column;
+        $column = $this->qualifyTranslationsColumn($column);
 
         return $query->where($column, $operator, $value);
     }
