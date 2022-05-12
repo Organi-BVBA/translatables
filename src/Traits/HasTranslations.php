@@ -318,8 +318,12 @@ trait HasTranslations
         );
     }
 
-    public function toTranslatedArray(string $locale, bool $localizeOnly = false): array
+    public function toTranslatedArray(string $locale = null, bool $localizeOnly = false): array
     {
+        if (is_null($locale)) {
+            $locale = App::getLocale();
+        }
+
         return array_merge(
             $localizeOnly ? [] : parent::attributesToArray(),
             $this->translatable($locale)
