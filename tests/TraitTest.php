@@ -1,8 +1,8 @@
 <?php
 
-use function Pest\Faker\faker;
 use Illuminate\Support\Facades\DB;
 use Organi\Translatables\Tests\Product;
+use function Pest\Faker\faker;
 
 beforeEach(function () {
     $this->model = new Product();

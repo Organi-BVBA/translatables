@@ -2,13 +2,13 @@
 
 namespace Organi\Translatables\Traits;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\App;
 use Illuminate\Database\Eloquent\Builder;
-use Organi\Translatables\Models\Translation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 use Organi\Translatables\Builders\TranslatablesBuilder;
+use Organi\Translatables\Models\Translation;
 
 trait HasTranslations
 {
@@ -199,7 +199,7 @@ trait HasTranslations
     public function setAllTranslations(array $translations)
     {
         $this->translations = $translations;
-        $this->dirty        = true;
+        $this->dirty = true;
 
         return $this;
     }
@@ -318,8 +318,12 @@ trait HasTranslations
         );
     }
 
-    public function toTranslatedArray(string $locale, bool $localizeOnly = false): array
+    public function toTranslatedArray(string $locale = null, bool $localizeOnly = false): array
     {
+        if (is_null($locale)) {
+            $locale = App::getLocale();
+        }
+
         return array_merge(
             $localizeOnly ? [] : parent::attributesToArray(),
             $this->translatable($locale)
@@ -331,7 +335,7 @@ trait HasTranslations
         string $column,
         string $locale = null,
         string $direction = 'asc'
-    ): TranslatablesBuilder {
+    ): Builder | TranslatablesBuilder {
         $this->joinTranslationsTable($query->getQuery());
 
         if (is_null($locale)) {
@@ -358,7 +362,7 @@ trait HasTranslations
         $operator = null,
         $value = null,
         string $locale = null
-    ): TranslatablesBuilder {
+    ): Builder | TranslatablesBuilder {
         [$value, $operator] = $query->getQuery()->prepareValueAndOperator(
             $value,
             $operator,
@@ -368,11 +372,11 @@ trait HasTranslations
         $this->joinTranslationsTable($query->getQuery());
 
         if (! is_null($locale)) {
-            $query->where($this->getLocaleColumn(), $locale);
+            $query->where($this->qualifyTranslationsColumn($this->getLocaleColumn()), $locale);
         }
 
         // Get the table + field name for the where clause
-        $column = $this->getTranslationsTable() . '.' . $column;
+        $column = $this->qualifyTranslationsColumn($column);
 
         return $query->where($column, $operator, $value);
     }
@@ -388,7 +392,7 @@ trait HasTranslations
 
         if (! $joined) {
             // Get the table + field names for the join
-            $t  = $this->getTable() . '.' . $this->getKeyName();
+            $t = $this->getTable() . '.' . $this->getKeyName();
             $tt = $this->getTranslationsTable() . '.' . $this->getKeyName();
 
             // Join the translations table

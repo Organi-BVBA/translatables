@@ -10,12 +10,16 @@ class Translatable implements Rule
     // contain all accepted locales
     protected bool $soft;
 
+
+    protected bool $required;
+
     /**
      * Create a new rule instance.
      */
-    public function __construct(bool $soft = true)
+    public function __construct(bool $soft = true, bool $required = true)
     {
         $this->soft = $soft;
+        $this->required = $required;
     }
 
     /**
@@ -28,12 +32,19 @@ class Translatable implements Rule
      */
     public function passes($attribute, $value)
     {
-        $locales     = config('translatables.accepted_locales');
+        $locales = config('translatables.accepted_locales');
         $usedLocales = array_keys($value);
 
-        return is_array($value)
+        $valid = is_array($value)
             && (count($value) === count($locales) || $this->soft)
             && 0 === count(array_diff($usedLocales, $locales));
+
+        if (! $this->required || ! $valid) {
+            return $valid;
+        }
+
+        // Translatable is required. Check if all locales have a translation.
+        return ! empty(implode('', $value));
     }
 
     /**
