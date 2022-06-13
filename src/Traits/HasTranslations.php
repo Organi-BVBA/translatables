@@ -476,7 +476,7 @@ trait HasTranslations
         return Translation::make(array_fill_keys($this->locales(), ''));
     }
 
-    public function newEloquentBuilder($query)
+    public function newEloquentBuilder($query): TranslatablesBuilder
     {
         return new TranslatablesBuilder($query);
     }
