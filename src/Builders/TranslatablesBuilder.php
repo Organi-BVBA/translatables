@@ -2,7 +2,7 @@
 
 namespace Organi\Translatables\Builders;
 
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 class TranslatablesBuilder extends Builder
