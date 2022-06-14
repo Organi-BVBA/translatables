@@ -5,6 +5,9 @@ namespace Organi\Translatables\Builders;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @mixin \Illuminate\Database\Query\Builder
+ */
 class TranslatablesBuilder extends Builder
 {
     public function delete()

@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\DB;
 use Organi\Translatables\Builders\TranslatablesBuilder;
 use Organi\Translatables\Models\Translation;
 
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder whereTranslation(string $column, string $operator = null, $value = null, string $locale = null)
+ */
 trait HasTranslations
 {
     /**
@@ -359,7 +362,7 @@ trait HasTranslations
     public function scopeWhereTranslation(
         Builder $query,
         string $column,
-        $operator = null,
+        string $operator = null,
         $value = null,
         string $locale = null
     ): Builder | TranslatablesBuilder {
@@ -476,6 +479,11 @@ trait HasTranslations
         return Translation::make(array_fill_keys($this->locales(), ''));
     }
 
+    /**
+     * @param QueryBuilder  $query
+     *
+     * @return TranslatablesBuilder
+     */
     public function newEloquentBuilder($query)
     {
         return new TranslatablesBuilder($query);
