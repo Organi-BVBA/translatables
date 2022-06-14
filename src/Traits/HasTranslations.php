@@ -12,6 +12,7 @@ use Organi\Translatables\Models\Translation;
 
 /**
  * @method static \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder whereTranslation(string $column, string $operator = null, $value = null, string $locale = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder orderByTranslation(string $column, string $locale = null, string $direction = 'asc')
  */
 trait HasTranslations
 {
