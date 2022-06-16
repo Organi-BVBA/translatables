@@ -385,7 +385,7 @@ trait HasTranslations
         return $query->where($column, $operator, $value);
     }
 
-    public function joinTranslationsTable(QueryBuilder $query): void
+    public function joinTranslationsTable(QueryBuilder $query, string $locale = null): QueryBuilder
     {
         // Check if table is already joined
         $joined = false;
@@ -398,12 +398,22 @@ trait HasTranslations
             // Get the table + field names for the join
             $t = $this->getTable() . '.' . $this->getKeyName();
             $tt = $this->getTranslationsTable() . '.' . $this->getKeyName();
+            $localeColumn = $this->qualifyTranslationsColumn($this->getLocaleColumn());
 
             // Join the translations table
-            $query->join($this->getTranslationsTable(), $t, '=', $tt);
+            $query->leftJoin($this->getTranslationsTable(), function ($join) use ($t, $tt, $localeColumn, $locale) {
+                $join->on($t, '=', $tt);
+
+                // Add option to filter on locale directly
+                if (! is_null($locale)) {
+                    $join->where($localeColumn, '=', $locale);
+                };
+            });
 
             // $query->select($this->getTable() . '.*');
         }
+
+        return $query;
     }
 
     public function replicate(array $except = null)
