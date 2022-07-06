@@ -17,6 +17,13 @@ use Organi\Translatables\Models\Translation;
 trait HasTranslations
 {
     /**
+     * Contains the original translations.
+     *
+     * @var array
+     */
+    private $originalTranslations;
+
+    /**
      * Contains the actual translations.
      *
      * @var array
@@ -236,6 +243,8 @@ trait HasTranslations
 
             $this->translations[$locale] = (array) $translation;
         }
+
+        $this->originalTranslations = $this->translations;
 
         return $this->translations;
     }
@@ -529,5 +538,36 @@ trait HasTranslations
     private function getEmptyTranslationsArray(): array
     {
         return array_fill_keys($this->localizable, '');
+    }
+
+    /**
+     * Get the attributes that have been changed since last sync.
+     *
+     * @return array
+     */
+    public function getDirtyTranslations(): array
+    {
+        $dirty = [];
+
+        foreach ($this->getActiveLocales() as $locale) {
+            $original = Arr::get($this->originalTranslations, $locale, []);
+            $new = Arr::get($this->translations, $locale, []);
+            $diff = array_diff($new, $original);
+
+            if (empty($diff)) {
+                continue;
+            }
+
+            foreach ($diff as $name => $value) {
+                $dirty[$name][$locale] = $value;
+            }
+        }
+
+        return $dirty;
+    }
+
+    public function getOriginaltranslation(string $locale, string $key, $default = null)
+    {
+        return Arr::get($this->originalTranslations, implode('.', [ $locale, $key ]), $default);
     }
 }
