@@ -1,6 +1,7 @@
 <?php
 
 use Organi\Translatables\Rules\Translatable;
+
 use function Pest\Faker\faker;
 
 beforeEach(function () {
