@@ -151,6 +151,12 @@ trait HasTranslations
         // Indicate the translations have changed
         $this->dirty = true;
 
+        // If the locale is not initialized yet, and the value is empty, we don't have to do anything.
+        // Otherwise we'll just clutter the dirty array
+        if (! Arr::has($this->translations, $locale) && ($value === '' || is_null($value))) {
+            return;
+        }
+
         // If the locale is not initialized yet -> do it now
         if (! Arr::has($this->translations, $locale)) {
             Arr::set($this->translations, $locale, $this->getEmptyTranslationsArray());
