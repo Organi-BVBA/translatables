@@ -17,6 +17,13 @@ use Organi\Translatables\Models\Translation;
 trait HasTranslations
 {
     /**
+     * Contains the original translations.
+     *
+     * @var array
+     */
+    private $originalTranslations;
+
+    /**
      * Contains the actual translations.
      *
      * @var array
@@ -144,6 +151,12 @@ trait HasTranslations
         // Indicate the translations have changed
         $this->dirty = true;
 
+        // If the locale is not initialized yet, and the value is empty, we don't have to do anything.
+        // Otherwise we'll just clutter the dirty array
+        if (! Arr::has($this->translations, $locale) && ($value === '' || is_null($value))) {
+            return;
+        }
+
         // If the locale is not initialized yet -> do it now
         if (! Arr::has($this->translations, $locale)) {
             Arr::set($this->translations, $locale, $this->getEmptyTranslationsArray());
@@ -236,6 +249,8 @@ trait HasTranslations
 
             $this->translations[$locale] = (array) $translation;
         }
+
+        $this->originalTranslations = $this->translations;
 
         return $this->translations;
     }
@@ -385,7 +400,7 @@ trait HasTranslations
         return $query->where($column, $operator, $value);
     }
 
-    public function joinTranslationsTable(QueryBuilder $query): void
+    public function joinTranslationsTable(QueryBuilder $query, string $locale = null): QueryBuilder
     {
         // Check if table is already joined
         $joined = false;
@@ -398,12 +413,22 @@ trait HasTranslations
             // Get the table + field names for the join
             $t = $this->getTable() . '.' . $this->getKeyName();
             $tt = $this->getTranslationsTable() . '.' . $this->getKeyName();
+            $localeColumn = $this->qualifyTranslationsColumn($this->getLocaleColumn());
 
             // Join the translations table
-            $query->join($this->getTranslationsTable(), $t, '=', $tt);
+            $query->leftJoin($this->getTranslationsTable(), function ($join) use ($t, $tt, $localeColumn, $locale) {
+                $join->on($t, '=', $tt);
+
+                // Add option to filter on locale directly
+                if (! is_null($locale)) {
+                    $join->where($localeColumn, '=', $locale);
+                };
+            });
 
             // $query->select($this->getTable() . '.*');
         }
+
+        return $query;
     }
 
     public function replicate(array $except = null)
@@ -519,5 +544,36 @@ trait HasTranslations
     private function getEmptyTranslationsArray(): array
     {
         return array_fill_keys($this->localizable, '');
+    }
+
+    /**
+     * Get the attributes that have been changed since last sync.
+     *
+     * @return array
+     */
+    public function getDirtyTranslations(): array
+    {
+        $dirty = [];
+
+        foreach ($this->getActiveLocales() as $locale) {
+            $original = Arr::get($this->originalTranslations, $locale, []);
+            $new = Arr::get($this->translations, $locale, []);
+            $diff = array_diff($new, $original);
+
+            if (empty($diff)) {
+                continue;
+            }
+
+            foreach ($diff as $name => $value) {
+                $dirty[$name][$locale] = $value;
+            }
+        }
+
+        return $dirty;
+    }
+
+    public function getOriginaltranslation(string $locale, string $key, $default = null)
+    {
+        return Arr::get($this->originalTranslations, implode('.', [ $locale, $key ]), $default);
     }
 }
