@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\DB;
 use Organi\Translatables\Tests\Product;
+
 use function Pest\Faker\faker;
 
 beforeEach(function () {
