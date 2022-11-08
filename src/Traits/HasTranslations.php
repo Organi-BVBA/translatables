@@ -87,7 +87,7 @@ trait HasTranslations
         // Convert dot notation to associative array
         $this->translations = Arr::undot($translatables);
 
-        parent::setRawAttributes($attributes, $sync);
+        return parent::setRawAttributes($attributes, $sync);
     }
 
     /**
