@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Organi\Translatables\Builders\TranslatablesBuilder;
 use Organi\Translatables\Models\Translation;
+use Organi\Translatables\Scopes\TranslationScope;
 
 /**
  * @method static \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder whereTranslation(string $column, string $operator = null, $value = null, string $locale = null)
@@ -63,6 +64,32 @@ trait HasTranslations
         return $this->getTranslatedLocales($attribute);
     }
 
+    // The TranslationScope will add all translated attributes in a single query.
+    // The raw data will then be passed to the this function.
+    // Here we'll filter out the fields added by the scope
+    // and populate the translations with it.
+    public function setRawAttributes(array $attributes, $sync = false)
+    {
+        $keys = [];
+
+        // Get an array of allowed keys for the translations
+        // ex: ['nl.title', 'nl.description', 'en.title', 'en.description']
+        foreach ($this->getLocalizable() as $attribute) {
+            foreach ($this->locales() as $locale) {
+                $keys[] = implode('.', [$locale, $attribute]);
+            }
+        }
+
+        // Get only the values with matching keys
+        $translatables = array_intersect_key($attributes, array_flip($keys));
+        // Remove the attributes from the attributes array
+        $attributes = array_diff_key($attributes, array_flip($keys));
+        // Convert dot notation to associative array
+        $this->translations = Arr::undot($translatables);
+
+        parent::setRawAttributes($attributes, $sync);
+    }
+
     /**
      * Magic method for setting a missing attribute.
      *
@@ -106,6 +133,8 @@ trait HasTranslations
      */
     public static function bootHasTranslations()
     {
+        static::addGlobalScope(new TranslationScope());
+
         static::saved(function ($model) {
             $model->commitTranslations();
         });
@@ -367,7 +396,7 @@ trait HasTranslations
             $locale = App::getLocale();
         }
 
-        $query->where($this->getLocaleColumn(), $locale);
+        $query->where($this->translationsTable() .  '.' . $this->getLocaleColumn(), $locale);
 
         // Get the table + field name for the where clause
         $column = $this->getTranslationsTable() . '.' . $column;
@@ -468,7 +497,11 @@ trait HasTranslations
 
     public function qualifyTranslationsColumn(string $column): string
     {
-        return implode('.', [$this->getTranslationsTable(), $column]);
+        if (str_contains($column, '.')) {
+            return $column;
+        }
+
+        return $this->getTranslationsTable() . '.' . $column;
     }
 
     // Return an array of all set locales for this model
