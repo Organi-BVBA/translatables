@@ -29,9 +29,14 @@ class TranslationScope implements Scope
             // Join the translations table
             $builder->getQuery()->leftJoin(
                 $model->getTranslationsTable() . ' as ' . $as,
-                $model->getQualifiedKeyName($model->getKeyName()),
-                '=',
-                $as . '.' . $model->getKeyName()
+                function ($join) use ($model, $as, $locale) {
+                    $join->on(
+                        $model->getQualifiedKeyName(),
+                        '=',
+                        $as . '.' . $model->getKeyName()
+                    )
+                     ->where($as . '.locale', '=', $locale);
+                }
             );
 
             // Add a select for all attributes.
