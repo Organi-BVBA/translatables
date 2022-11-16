@@ -260,20 +260,14 @@ trait HasTranslations
             return $this->translations;
         }
 
-        // Empty translations array
-        $this->translations = [];
-
-        // If the key is null, the item is new
-        // There will be no translations in the database
-        if ($this->getKey() === null) {
-            return $this->translations;
-        }
-
         // TODO: Now this an array. Should prolly return a custom translations object
         $translations = DB::table($this->getTranslationsTable())
             ->where($this->getKeyName(), $this->getKey())
             ->select(array_merge([$this->getLocaleColumn()], $this->localizable))
             ->get();
+
+        // Empty translations array
+        $this->translations = [];
 
         foreach ($translations as $translation) {
             // Get the locale from the object
