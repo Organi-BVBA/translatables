@@ -609,4 +609,79 @@ trait HasTranslations
     {
         return Arr::get($this->originalTranslations, implode('.', [ $locale, $key ]), $default);
     }
+    /**
+     * Create a new Eloquent Collection instance.
+     *
+     * @param  array  $models
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function newCollection(array $models = [])
+    {
+        // If there's 0 or 1 model in this collection there's no
+        // performance improvement if we retrieve the collections now
+        if (count($models) <= 1) {
+            return parent::newCollection($models);
+        }
+
+        // When you call the get method the builder executes the query and collects all
+        // of the results using the getModels method. getModels is using Model::hydrate to
+        // build the first collection ( using newCollection ) without eager loads but then
+        // needs to unwrap it because getModels needs to return an array. After eager loading
+        // is complete ( if necessary ) then newCollection is called again to return the
+        // newly eager loaded dataset.
+        // So make sure translations aren't already loaded
+        $loaded = is_array($models[0]->translations);
+
+        if ($loaded) {
+            // If so, skip the bottom part
+            return parent::newCollection($models);
+        }
+
+        // Get all ids
+        $ids = array_map(function ($model) {
+            return $model->id;
+        }, $models);
+
+        // Get all translations at once
+        $ts = DB::table($this->getTranslationsTable())
+                ->whereIn($this->getKeyName(), $ids)
+                ->select(array_merge([$this->getKeyName(), $this->getLocaleColumn()], $this->localizable))
+                ->get()
+                ->groupBy('id');
+
+        // Get the fields that are defined as translatables
+        $localizable = $this->localizable;
+
+        // Set the translations for all models
+        foreach ($models as $model) {
+            $translations = Arr::get($ts, $model->id);
+
+            if (is_null($translations)) {
+                // No translations for this model
+                $model->setAllTranslations([]);
+
+                continue;
+            }
+
+
+            $translations = $translations
+                ->keyBy('locale')
+                ->map(
+                    function ($t) use ($localizable) {
+                        // Only keep translations (remove id and locale values)
+                        foreach ($t as $key => $value) {
+                            if (! in_array($key, $localizable)) {
+                                unset($t->{$key});
+                            }
+                        }
+
+                        return (array) $t;
+                    }
+                );
+
+            $model->setAllTranslations($translations->toArray());
+        }
+
+        return parent::newCollection($models);
+    }
 }
