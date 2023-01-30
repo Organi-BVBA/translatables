@@ -7,6 +7,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Organi\Translatables\Builders\TranslatablesBuilder;
 use Organi\Translatables\Models\Translation;
 
@@ -240,10 +241,15 @@ trait HasTranslations
             return $this->translations;
         }
 
+        $columnsInDatabase = Schema::getColumnListing($this->getTranslationsTable());
+
+        $allowedColumns = array_intersect($columnsInDatabase, $this->localizable);
+
+
         // TODO: Now this an array. Should prolly return a custom translations object
         $translations = DB::table($this->getTranslationsTable())
             ->where($this->getKeyName(), $this->getKey())
-            ->select(array_merge([$this->getLocaleColumn()], $this->localizable))
+            ->select(array_merge([$this->getLocaleColumn()], $allowedColumns))
             ->get();
 
         foreach ($translations as $translation) {
