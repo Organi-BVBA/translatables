@@ -626,7 +626,7 @@ trait HasTranslations
                 ->whereIn($this->getKeyName(), $ids)
                 ->select(array_merge([$this->getKeyName(), $this->getLocaleColumn()], $this->localizable))
                 ->get()
-                ->groupBy('id');
+                ->groupBy($this->getKeyName());
 
         // Get the fields that are defined as translatables
         $localizable = $this->localizable;
