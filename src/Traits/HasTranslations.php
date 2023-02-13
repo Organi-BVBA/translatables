@@ -7,6 +7,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Organi\Translatables\Builders\TranslatablesBuilder;
 use Organi\Translatables\Models\Translation;
 
@@ -240,10 +241,15 @@ trait HasTranslations
             return $this->translations;
         }
 
+        $columnsInDatabase = Schema::getColumnListing($this->getTranslationsTable());
+
+        $allowedColumns = array_intersect($columnsInDatabase, $this->localizable);
+
+
         // TODO: Now this an array. Should prolly return a custom translations object
         $translations = DB::table($this->getTranslationsTable())
             ->where($this->getKeyName(), $this->getKey())
-            ->select(array_merge([$this->getLocaleColumn()], $this->localizable))
+            ->select(array_merge([$this->getLocaleColumn()], $allowedColumns))
             ->get();
 
         foreach ($translations as $translation) {
@@ -271,6 +277,10 @@ trait HasTranslations
             return;
         }
 
+        if ($this->fireModelEvent('updating') === false) {
+            return;
+        }
+
         DB::transaction(function () {
             foreach ($this->translations as $locale => $translatable) {
                 if (null === implode('', $translatable) || '' === implode('', $translatable)) {
@@ -290,6 +300,8 @@ trait HasTranslations
                 }
             }
         });
+
+        $this->fireModelEvent('updated', false);
 
         // Touch the model without raising events
         // Otherwise we'll end up in an infinite loop
@@ -620,7 +632,7 @@ trait HasTranslations
                 ->whereIn($this->getKeyName(), $ids)
                 ->select(array_merge([$this->getKeyName(), $this->getLocaleColumn()], $this->localizable))
                 ->get()
-                ->groupBy('id');
+                ->groupBy($this->getKeyName());
 
         // Get the fields that are defined as translatables
         $localizable = $this->localizable;
