@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Organi\Translatables\Builders\TranslatablesBuilder;
@@ -241,7 +242,7 @@ trait HasTranslations
             return $this->translations;
         }
 
-        $columnsInDatabase = Schema::getColumnListing($this->getTranslationsTable());
+        $columnsInDatabase = $this->translatableColumnsInDatabase();
 
         $allowedColumns = array_intersect($columnsInDatabase, $this->localizable);
 
@@ -266,6 +267,22 @@ trait HasTranslations
 
         return $this->translations;
     }
+
+    private function translatableColumnsInDatabase(): array
+    {
+        $key = $this->getTranslationsTable() . '_columns';
+
+        if (Cache::has($key)) {
+            return Cache::get($key);
+        }
+
+        $columns = Schema::getColumnListing($this->getTranslationsTable());
+
+        Cache::put($key, $columns);
+
+        return $columns;
+    }
+
 
     /**
      * Save translations to database.
