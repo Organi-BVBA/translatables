@@ -294,10 +294,6 @@ trait HasTranslations
             return;
         }
 
-        if ($this->fireModelEvent('updating') === false) {
-            return;
-        }
-
         DB::transaction(function () {
             foreach ($this->translations as $locale => $translatable) {
                 if (null === implode('', $translatable) || '' === implode('', $translatable)) {
@@ -317,8 +313,6 @@ trait HasTranslations
                 }
             }
         });
-
-        $this->fireModelEvent('updated', false);
 
         // Touch the model without raising events
         // Otherwise we'll end up in an infinite loop
