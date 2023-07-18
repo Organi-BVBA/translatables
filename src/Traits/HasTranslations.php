@@ -115,7 +115,7 @@ trait HasTranslations
         // Delete the translations when deleting the model
         static::deleting(function ($model) {
             // Keep translations when soft-deleting an item
-            if (! $this->usesSoftDeletes()) {
+            if (! in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($model), true)) {
                 $model->deleteTranslations();
             }
         });
@@ -682,10 +682,5 @@ trait HasTranslations
         }
 
         return parent::newCollection($models);
-    }
-
-    protected function usesSoftDeletes(): bool
-    {
-        return in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this), true);
     }
 }
