@@ -74,7 +74,7 @@ interface TranslatableInterface
 
     public function getEmptyTranslation(): Translation;
 
-    public function newEloquentBuilder($query);
+    public function newEloquentBuilder(QueryBuilder $query);
 
     public function getDirtyTranslations(): array;
 
